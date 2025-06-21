@@ -27,6 +27,9 @@ class MasterFertilizerController extends Controller
 
         $path = $request->file('image')->store('fertilizers', 'public');
 
+        $lastId = Fertilizer::max('id') + 1;
+        $fertilizerId = 'fart-' . str_pad($lastId, 4, '0', STR_PAD_LEFT);
+
         $fertilizer = Fertilizer::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -90,7 +93,7 @@ class MasterFertilizerController extends Controller
             $fertilizer->delete();
             return response()->json(['message' => 'Fertilizer deleted.']);
         }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
-            return response()->json(['message'=>'notes not found'],404);
+            return response()->json(['message'=>'Fertilizer not found'],404);
         }catch(\Exception $e){
             return response()->json([
                 'message'=>'Something Error',

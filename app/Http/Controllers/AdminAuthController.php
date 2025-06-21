@@ -45,7 +45,7 @@ class AdminAuthController extends Controller
 
 
 
-    public function logout(Request $request)
+    public function logout(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $user = $request->user();

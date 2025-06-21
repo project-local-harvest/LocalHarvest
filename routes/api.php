@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Api\Admin\MasterFertilizerController;
+use App\Http\Controllers\Api\ShopOwner\ShopProfileController;
 use App\Http\Controllers\ShopOwnerAuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -26,4 +27,12 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::post('/fertilizers/edit/{id}',[MasterFertilizerController::class, 'update']);
     Route::delete('/fertilizers/{id}',[MasterFertilizerController::class, 'destroy']);
 
+});
+
+
+Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
+
+    Route::get('/shop-profile', [ShopProfileController::class, 'show']);
+    Route::post('/setup-shop-profile', [ShopProfileController::class, 'store']);
+    Route::post('/edit-shop-profile', [ShopProfileController::class, 'update']);
 });

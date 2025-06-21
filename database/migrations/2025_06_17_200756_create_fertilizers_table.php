@@ -11,6 +11,7 @@ return new class extends Migration
     {
         Schema::create('fertilizers', function (Blueprint $table) {
             $table->id();
+            $table->string('fertilizer_id')->unique();
             $table->string('name')->unique();
             $table->text('description');
             $table->string('npk_ratio');
