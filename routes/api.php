@@ -35,5 +35,4 @@ Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
     Route::get('/shop-profile', [ShopProfileController::class, 'show']);
     Route::post('/setup-shop-profile', [ShopProfileController::class, 'store']);
     Route::post('/edit-shop-profile', [ShopProfileController::class, 'update']);
-    Route::post('/balsal', [ShopProfileController::class, 'update']);
 });
