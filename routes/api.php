@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\MasterFertilizerController;
 use App\Http\Controllers\Api\ShopOwner\ShopInventoryController;
 use App\Http\Controllers\Api\ShopOwner\ShopProfileController;
@@ -27,6 +28,8 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::post('/fertilizers/edit/{id}',[MasterFertilizerController::class, 'update']);
     Route::delete('/fertilizers/{id}',[MasterFertilizerController::class, 'destroy']);
 
+    Route::get('/admin-dashboard-summary', [DashboardController::class, 'adminOverview']);
+
 });
 
 
@@ -39,4 +42,7 @@ Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
     Route::apiResource('inventory', ShopInventoryController::class)->except(['update']);
     Route::post('inventory/{id}', [ShopInventoryController::class, 'update']);
     Route::get('/available-fertilizers', [ShopInventoryController::class, 'getAvailableFertilizers']);
+
+    Route::get('/shop-dashboard-summary', [DashboardController::class, 'inventorySummary']);
+
 });
