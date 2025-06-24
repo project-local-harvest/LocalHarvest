@@ -27,7 +27,7 @@ class LoginController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
+        $response = [
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -36,7 +36,13 @@ class LoginController extends Controller
             ],
             'access_token' => $token,
             'token_type' => 'Bearer',
-        ]);
+        ];
+
+        if ($user->role === 'shop_owner') {
+            $response['user']['hasProfileSetup'] = $user->shop()->exists();
+        }
+
+        return response()->json($response);
     }
 
     public function logout(Request $request): \Illuminate\Http\JsonResponse
