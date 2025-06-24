@@ -93,4 +93,15 @@ class ShopProfileController extends Controller
             'data' => $shop
         ]);
     }
+    public function toggleStatus($id)
+    {
+        $shop = Shop::findOrFail($id);
+        $shop->status = $shop->status === 'active' ? 'inactive' : 'active';
+        $shop->save();
+
+        return response()->json([
+            'message' => "Shop status toggled to {$shop->status}.",
+            'shop' => $shop
+        ]);
+    }
 }

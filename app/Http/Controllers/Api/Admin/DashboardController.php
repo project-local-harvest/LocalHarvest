@@ -28,13 +28,13 @@ class DashboardController extends Controller
     {
         $totalUsers = User::where('role', '!=', 'admin')->count();
         $totalShopOwners = User::where('role', 'shop_owner')->count();
-        $totalShops = Shop::whereNotNull('shop_name')->count();
+        $activeShops       = Shop::where('status', 'active')->count();
         $totalFertilizers = Fertilizer::count();
 
         return response()->json([
             'total_users' => $totalUsers,
             'total_shop_owners' => $totalShopOwners,
-            'total_shops' => $totalShops,
+            'active_shops'       => $activeShops,
             'total_fertilizers' => $totalFertilizers,
         ]);
     }

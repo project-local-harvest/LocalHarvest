@@ -12,6 +12,7 @@ class Shop extends Model
         'contact_number',
         'address',
         'owner_picture_url',
+        'status'
     ];
 
     public function user()

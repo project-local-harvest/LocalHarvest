@@ -30,6 +30,9 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
 
     Route::get('/admin-dashboard-summary', [DashboardController::class, 'adminOverview']);
 
+    Route::patch('/shops/{id}/toggle-status', [ShopProfileController::class, 'toggleStatus']);
+
+
 });
 
 
