@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class AdminAuthController extends Controller
+class LoginController extends Controller
 {
     public function login(Request $request)
     {
@@ -19,10 +19,6 @@ class AdminAuthController extends Controller
 
         if (!$user) {
             return response()->json(['error' => 'Email not registered.'], 404);
-        }
-
-        if ($user->role !== 'admin') {
-            return response()->json(['error' => 'Access denied. Only admins can log in here.'], 403);
         }
 
         if (!Hash::check($request->password, $user->password)) {
@@ -42,8 +38,6 @@ class AdminAuthController extends Controller
             'token_type' => 'Bearer',
         ]);
     }
-
-
 
     public function logout(Request $request): \Illuminate\Http\JsonResponse
     {

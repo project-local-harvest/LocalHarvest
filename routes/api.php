@@ -1,22 +1,22 @@
 <?php
 
-use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Api\Admin\MasterFertilizerController;
 use App\Http\Controllers\Api\ShopOwner\ShopProfileController;
-use App\Http\Controllers\ShopOwnerAuthController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
 
-Route::post('admin/login', [AdminAuthController::class, 'login']);
+Route::post('login', [LoginController::class, 'login']);
 
-Route::post('shop_owner/login', [ShopOwnerAuthController::class, 'login']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [LoginController::class, 'logout']);
+});
 
 
 Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
-    Route::post('logout', [AdminAuthController::class, 'logout']);
     Route::post('/create-user', [UserController::class, 'register']);
 
 
@@ -30,7 +30,6 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
 
 
 Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
-    Route::post('logout', [ShopOwnerAuthController::class, 'logout']);
 
     Route::get('/shop-profile', [ShopProfileController::class, 'show']);
     Route::post('/setup-shop-profile', [ShopProfileController::class, 'store']);
