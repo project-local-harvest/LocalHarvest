@@ -50,7 +50,7 @@ class ShopProfileController extends Controller
             'shop_name' => $request->shop_name,
             'contact_number' => $request->contact_number,
             'address' => $request->address,
-            'owner_picture_url' => $path ? Storage::url($path) : null,
+            'owner_picture_url' => $path ? asset(Storage::url($path)) : null,
         ]);
 
         return response()->json([
@@ -83,7 +83,7 @@ class ShopProfileController extends Controller
             }
 
             $path = $request->file('owner_picture')->store('shop_owners', 'public');
-            $shop->owner_picture_url = Storage::url($path);
+            $shop->owner_picture_url = asset(Storage::url($path));
         }
 
         $shop->update($request->only(['shop_name', 'contact_number', 'address']));
