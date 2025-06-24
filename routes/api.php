@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\MasterFertilizerController;
+use App\Http\Controllers\Api\ShopOwner\ShopInventoryController;
 use App\Http\Controllers\Api\ShopOwner\ShopProfileController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
@@ -34,4 +35,8 @@ Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
     Route::get('/shop-profile', [ShopProfileController::class, 'show']);
     Route::post('/setup-shop-profile', [ShopProfileController::class, 'store']);
     Route::post('/edit-shop-profile', [ShopProfileController::class, 'update']);
+
+    Route::apiResource('inventory', ShopInventoryController::class)->except(['update']);
+    Route::post('inventory/{id}', [ShopInventoryController::class, 'update']);
+    Route::get('/available-fertilizers', [ShopInventoryController::class, 'getAvailableFertilizers']);
 });

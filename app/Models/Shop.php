@@ -19,6 +19,16 @@ class Shop extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function shopInventories()
+    {
+        return $this->hasMany(ShopInventory::class);
+    }
+
+    public function fertilizers()
+    {
+        return $this->belongsToMany(Fertilizer::class, 'shop_inventories');
+    }
+
     protected static function boot()
     {
         parent::boot();
