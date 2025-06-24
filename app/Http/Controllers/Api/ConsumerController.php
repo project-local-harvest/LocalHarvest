@@ -4,12 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fertilizer;
+use App\Models\Visitor;
 use Illuminate\Http\Request;
 
 class ConsumerController extends Controller
 {
-    public function listFertilizers()
+    public function listFertilizers(Request $request)
     {
+        Visitor::create([
+            'ip_address' => $request->ip(),
+            'visited_at' => now(),
+        ]);
+
         return response()->json(Fertilizer::all());
     }
 

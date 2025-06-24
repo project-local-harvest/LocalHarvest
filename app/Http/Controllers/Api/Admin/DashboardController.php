@@ -7,6 +7,7 @@ use App\Models\Fertilizer;
 use App\Models\Shop;
 use App\Models\ShopInventory;
 use App\Models\User;
+use App\Models\Visitor;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -26,16 +27,18 @@ class DashboardController extends Controller
 
     public function adminOverview(): \Illuminate\Http\JsonResponse
     {
-        $totalUsers = User::where('role', '!=', 'admin')->count();
+        $totalRegisteredUsers = User::where('role', '!=', 'admin')->count();
         $totalShopOwners = User::where('role', 'shop_owner')->count();
         $activeShops       = Shop::where('status', 'active')->count();
         $totalFertilizers = Fertilizer::count();
+        $totalVisitors = Visitor::distinct('ip_address')->count('ip_address');
 
         return response()->json([
-            'total_users' => $totalUsers,
+            'total_registered_users' => $totalRegisteredUsers,
             'total_shop_owners' => $totalShopOwners,
             'active_shops'       => $activeShops,
             'total_fertilizers' => $totalFertilizers,
+            'total_visitors' => $totalVisitors,
         ]);
     }
 
