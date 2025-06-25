@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class ShopProfileController extends Controller
 {
+    public function listShops()
+    {
+        return response()->json(Shop::with('user')->get());
+    }
+
     public function show(Request $request)
     {
         $user = $request->user();

@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
 
+    Route::get('/shops', [ShopProfileController::class, 'listShops']);
     Route::get('/fertilizers',[MasterFertilizerController::class, 'index']);
     Route::post('/add-fertilizers',[MasterFertilizerController::class, 'store']);
     Route::get('/fertilizers/{id}',[MasterFertilizerController::class, 'show']);

@@ -27,7 +27,7 @@ class ConsumerController extends Controller
             return response()->json(['message' => 'Fertilizer not found.'], 404);
         }
 
-        $shops = $fertilizer->shops()->with('user')->get()->map(function ($shop) use ($fertilizer) {
+        $shops = $fertilizer->shops()->where('status', 'active')->with('user')->get()->map(function ($shop) use ($fertilizer) {
             $inventory = $shop->shopInventories()->where('fertilizer_id', $fertilizer->id)->first();
             return [
                 'shop_name' => $shop->shop_name,
