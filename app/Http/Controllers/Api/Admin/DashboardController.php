@@ -12,16 +12,24 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function inventorySummary(): \Illuminate\Http\JsonResponse
+    public function inventorySummary(Request $request): \Illuminate\Http\JsonResponse
     {
-        $total = ShopInventory::count();
-        $inStock = ShopInventory::where('stock_status', 'in_stock')->count();
-        $lowStock = ShopInventory::where('stock_status', 'low_stock')->count();
+        $user = $request->user();
+        $shop = $user->shop;
+
+        $hasProfileSetup = (bool)$shop;
+        $shopStatus = $shop ? $shop->status : null;
+
+        $total = $shop ? $shop->shopInventories()->count() : 0;
+        $inStock = $shop ? $shop->shopInventories()->where('stock_status', 'in_stock')->count() : 0;
+        $lowStock = $shop ? $shop->shopInventories()->where('stock_status', 'low_stock')->count() : 0;
 
         return response()->json([
+            'hasProfileSetup' => $hasProfileSetup,
+            'shop_status' => $shopStatus,
             'total_products' => $total,
             'in_stock' => $inStock,
-            'low_stock' => $lowStock
+            'low_stock' => $lowStock,
         ]);
     }
 
