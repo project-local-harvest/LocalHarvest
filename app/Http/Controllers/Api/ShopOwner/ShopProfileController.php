@@ -75,7 +75,6 @@ class ShopProfileController extends Controller
         }
 
         $request->validate([
-            'shop_name' => 'sometimes|string|max:255',
             'contact_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:1000',
             'owner_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -91,7 +90,7 @@ class ShopProfileController extends Controller
             $shop->owner_picture_url = asset(Storage::url($path));
         }
 
-        $shop->update($request->only(['shop_name', 'contact_number', 'address']));
+        $shop->update($request->only(['contact_number', 'address']));
 
         return response()->json([
             'message' => 'Shop profile updated successfully.',
