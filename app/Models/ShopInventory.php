@@ -20,4 +20,14 @@ class ShopInventory extends Model
     {
         return $this->belongsTo(Fertilizer::class);
     }
+
+    public function updateStockStatus(): void
+    {
+        $this->stock_status = match (true) {
+            $this->stock_quantity == 0 => 'out_of_stock',
+            $this->stock_quantity <= 5 => 'low_stock',
+            default => 'in_stock',
+        };
+        $this->save();
+    }
 }

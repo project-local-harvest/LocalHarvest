@@ -7,8 +7,10 @@ use App\Models\{Sale, SaleItem, ShopInventory};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Jobs\GenerateReceiptPdf;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Shop;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -34,7 +36,7 @@ class SaleController extends Controller
             'items.*.unit_price'    => 'required|numeric|min:0',
         ]);
 
-        return DB::transaction(function () use ($request, $shop) {
+        return DB::transaction(function () use ($request, $shop, $user) {
 
             $receiptNo = 'MHP-SR-' . now()->format('Ymd') . '-' .
                 str_pad((Sale::whereDate('created_at',today())->count()+1),4,'0',STR_PAD_LEFT);
@@ -42,9 +44,9 @@ class SaleController extends Controller
             $sale = Sale::create([
                 'shop_id'          => $shop->id,
                 'receipt_no'       => $receiptNo,
-                'customer_name'    => $request->customer_name,
-                'customer_phone'   => $request->customer_phone,
-                'salesperson_name' => $request->salesperson_name,
+                'customer_name'    => $request->input('customer_name') ?: 'N/A',
+                'customer_phone'   => $request->input('customer_phone') ?: '01XXX - XXXXXX',
+                'salesperson_name' => $request->input('salesperson_name') ?: $user->name,
                 'discount_percent' => $request->discount_percent ?? 0,
                 'gross_amount'     => 0,
                 'net_amount'       => 0,
@@ -58,17 +60,13 @@ class SaleController extends Controller
                     ->where('fertilizer_id',$row['fertilizer_id'])
                     ->lockForUpdate()->first();
 
-                if (!$inv || $inv->stock_quantity < $row['quantity'])
-                    abort(409,'Insufficient stock for fertilizer '.$row['fertilizer_id']);
+                if (!$inv || $inv->stock_quantity < $row['quantity']) {
+                    return response()->json(['message' => 'Insufficient stock for fertilizer ' . $row['fertilizer_id']], 409);
+                }
 
                 // deduct stock
                 $inv->stock_quantity -= $row['quantity'];
-                $inv->stock_status = match (true) {
-                    $inv->stock_quantity == 0     => 'out_of_stock',
-                    $inv->stock_quantity <= 5     => 'low_stock',
-                    default                       => 'in_stock',
-                };
-                $inv->save();
+                $inv->updateStockStatus();
 
                 $subtotal = $row['quantity'] * $row['unit_price'];
                 $gross   += $subtotal;
@@ -86,21 +84,24 @@ class SaleController extends Controller
             $net      = $gross - $discount;
             $sale->update(['gross_amount'=>$gross,'net_amount'=>$net]);
 
+            GenerateReceiptPdf::dispatch($sale);
+
             return response()->json([
-                'message' => 'Sale recorded & inventory updated.',
+                'message' => 'Sale recorded & inventory updated. Receipt generation is in progress.',
                 'receipt' => $sale->load('items.fertilizer:id,name,category')
             ],201);
         });
     }
 
-
-    public function pdf(Sale $sale)
+    public function downloadReceipt($id)
     {
-        $sale->load(['shop', 'items.fertilizer']);
+        $sale = Sale::findOrFail($id);
+        $path = 'receipts/' . $sale->receipt_no . '.pdf';
 
-        return Pdf::loadView('pdf.receipt', [
-            'sale' => $sale,
-            'shop' => $sale->shop
-        ])->download($sale->receipt_no . '.pdf');
+        if (!Storage::disk('local')->exists($path)) {
+            return response()->json(['message' => 'Receipt not found.'], 404);
+        }
+
+        return Storage::disk('local')->download($path);
     }
 }
