@@ -10,6 +10,8 @@ class Fertilizer extends Model
        'fertilizer_id', 'name', 'description', 'npk_ratio', 'category', 'image_url', 'application_guide'
     ];
 
+
+
     protected static function booted()
     {
         static::creating(function ($fertilizer) {

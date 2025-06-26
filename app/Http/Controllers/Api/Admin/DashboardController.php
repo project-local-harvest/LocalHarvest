@@ -51,7 +51,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function totalFertilizerStock()
+    public function totalFertilizerStock(): \Illuminate\Http\JsonResponse
     {
         $stocks = DB::table('shop_inventories')
             ->join('fertilizers', 'shop_inventories.fertilizer_id', '=', 'fertilizers.id')
@@ -66,4 +66,6 @@ class DashboardController extends Controller
 
         return response()->json($stocks);
     }
+
+
 }

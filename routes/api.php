@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\MasterFertilizerController;
+use App\Http\Controllers\Api\ShopOwner\SaleController;
 use App\Http\Controllers\Api\ShopOwner\ShopInventoryController;
 use App\Http\Controllers\Api\ShopOwner\ShopProfileController;
 use App\Http\Controllers\LoginController;
@@ -48,5 +49,8 @@ Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
 
     Route::get('/available-fertilizers', [ShopInventoryController::class, 'getAvailableFertilizers']);
     Route::get('/shop-dashboard-summary', [DashboardController::class, 'inventorySummary']);
+
+    Route::post('/sales',[SaleController::class,'store']);
+    Route::get ('/sales/{sale}/pdf',[SaleController::class,'pdf']);
 
 });

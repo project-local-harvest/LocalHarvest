@@ -16,8 +16,7 @@ class ShopInventory extends Model
         'stock_status',
         'price_per_unit',
     ];
-
-    public function fertilizer()
+    public function fertilizer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Fertilizer::class);
     }
