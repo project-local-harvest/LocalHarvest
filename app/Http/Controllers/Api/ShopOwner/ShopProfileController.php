@@ -38,13 +38,8 @@ class ShopProfileController extends Controller
             'shop_name' => 'required|string|max:255',
             'contact_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:1000',
-            'owner_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'owner_picture_url' => 'nullable|url',
         ]);
-
-        $path = null;
-        if ($request->hasFile('owner_picture')) {
-            $path = $request->file('owner_picture')->store('shop_owners', 'public');
-        }
 
         $latestId = Shop::max('id') ?? 0;
         $serial = 'MHP' . now()->year . (100 + $latestId + 1);
@@ -55,7 +50,7 @@ class ShopProfileController extends Controller
             'shop_name' => $request->shop_name,
             'contact_number' => $request->contact_number,
             'address' => $request->address,
-            'owner_picture_url' => $path ? asset(Storage::url($path)) : null,
+            'owner_picture_url' => $request->owner_picture_url,
         ]);
 
         return response()->json([
@@ -77,20 +72,10 @@ class ShopProfileController extends Controller
         $request->validate([
             'contact_number' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:1000',
-            'owner_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'owner_picture_url' => 'nullable|url',
         ]);
 
-        if ($request->hasFile('owner_picture')) {
-            if ($shop->owner_picture_url) {
-                $oldPath = str_replace('/storage/', '', $shop->owner_picture_url);
-                Storage::disk('public')->delete($oldPath);
-            }
-
-            $path = $request->file('owner_picture')->store('shop_owners', 'public');
-            $shop->owner_picture_url = asset(Storage::url($path));
-        }
-
-        $shop->update($request->only(['contact_number', 'address']));
+        $shop->update($request->only(['contact_number', 'address', 'owner_picture_url']));
 
         return response()->json([
             'message' => 'Shop profile updated successfully.',

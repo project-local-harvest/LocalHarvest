@@ -21,23 +21,11 @@ class MasterFertilizerController extends Controller
             'description' => 'required',
             'npk_ratio' => 'required|string',
             'category' => 'required|string',
-            'image' => 'required|image|max:2048',
+            'image_url' => 'required|url',
             'application_guide' => 'nullable|string',
         ]);
 
-        $path = $request->file('image')->store('fertilizers', 'public');
-
-        $lastId = Fertilizer::max('id') + 1;
-        $fertilizerId = 'fart-' . str_pad($lastId, 4, '0', STR_PAD_LEFT);
-
-        $fertilizer = Fertilizer::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'npk_ratio' => $request->npk_ratio,
-            'category' => $request->category,
-            'image_url' => Storage::url($path),
-            'application_guide' => $request->application_guide,
-        ]);
+        $fertilizer = Fertilizer::create($request->all());
 
         return response()->json($fertilizer, 201);
     }
@@ -63,16 +51,11 @@ class MasterFertilizerController extends Controller
                 'description' => 'sometimes|string',
                 'npk_ratio' => 'sometimes|string',
                 'category' => 'sometimes|string',
-                'image' => 'sometimes|image|max:2048',
+                'image_url' => 'sometimes|url',
                 'application_guide' => 'nullable|string',
             ]);
 
-            if ($request->hasFile('image')) {
-                $path = $request->file('image')->store('fertilizers', 'public');
-                $fertilizer->image_url = Storage::url($path);
-            }
-
-            $fertilizer->update($request->except('image'));
+            $fertilizer->update($request->all());
 
             return response()->json($fertilizer);
         }catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e){
