@@ -9,6 +9,7 @@ use App\Models\ShopInventory;
 use App\Models\User;
 use App\Models\Visitor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -50,4 +51,19 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function totalFertilizerStock()
+    {
+        $stocks = DB::table('shop_inventories')
+            ->join('fertilizers', 'shop_inventories.fertilizer_id', '=', 'fertilizers.id')
+            ->select(
+                'fertilizers.name',
+                'fertilizers.category',
+                DB::raw('SUM(shop_inventories.stock_quantity) as total_stock')
+            )
+            ->groupBy('fertilizers.id', 'fertilizers.name', 'fertilizers.category')
+            ->orderByDesc('total_stock')
+            ->get();
+
+        return response()->json($stocks);
+    }
 }

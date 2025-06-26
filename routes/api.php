@@ -32,9 +32,13 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
 
     Route::get('/admin-dashboard-summary', [DashboardController::class, 'adminOverview']);
     Route::patch('/shops/{id}/toggle-status', [ShopProfileController::class, 'toggleStatus']);
+
+    Route::get('/report-fertilizer-stock-summary', [DashboardController::class, 'totalFertilizerStock']);
+
 });
 
 Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
+
     Route::get('/shop-profile', [ShopProfileController::class, 'show']);
     Route::post('/setup-shop-profile', [ShopProfileController::class, 'store']);
     Route::post('/edit-shop-profile', [ShopProfileController::class, 'update']);
