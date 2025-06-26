@@ -104,4 +104,19 @@ class SaleController extends Controller
 
         return Storage::disk('local')->download($path);
     }
+
+    public function searchByReceipt(Request $request)
+    {
+        $request->validate([
+            'receipt_no' => 'required|string',
+        ]);
+
+        $sale = Sale::where('receipt_no', $request->receipt_no)->with('items.fertilizer')->first();
+
+        if (!$sale) {
+            return response()->json(['message' => 'Sale not found.'], 404);
+        }
+
+        return response()->json($sale);
+    }
 }
