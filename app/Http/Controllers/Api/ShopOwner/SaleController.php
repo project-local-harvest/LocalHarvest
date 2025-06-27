@@ -1,19 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Api\ShopOwner;
-
 use App\Http\Controllers\Controller;
 use App\Models\{Sale, SaleItem, ShopInventory};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Jobs\GenerateReceiptPdf;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Shop;
 use Illuminate\Support\Facades\Storage;
-
-
-
 
 class SaleController extends Controller
 {
@@ -93,25 +87,11 @@ class SaleController extends Controller
             $net      = $gross - $discount;
             $sale->update(['gross_amount'=>$gross,'net_amount'=>$net]);
 
-            GenerateReceiptPdf::dispatch($sale);
-
             return response()->json([
-                'message' => 'Sale recorded & inventory updated. Receipt generation is in progress.',
+                'message' => 'Sale recorded & inventory updated.',
                 'receipt' => $sale->load('items.fertilizer:id,name,category')
             ],201);
         });
-    }
-
-    public function downloadReceipt($id)
-    {
-        $sale = Sale::findOrFail($id);
-        $path = 'receipts/' . $sale->receipt_no . '.pdf';
-
-        if (!Storage::disk('local')->exists($path)) {
-            return response()->json(['message' => 'Receipt not found.'], 404);
-        }
-
-        return Storage::disk('local')->download($path);
     }
 
     public function searchByReceipt(Request $request)

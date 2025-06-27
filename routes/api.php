@@ -52,7 +52,6 @@ Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
 
     Route::get('/sales', [SaleController::class, 'index']);
     Route::post('/sales',[SaleController::class,'store']);
-    Route::get ('/sales/{id}/download-receipt',[SaleController::class,'downloadReceipt']);
     Route::get('/sales/search', [SaleController::class, 'searchByReceipt']);
 
 });
