@@ -50,6 +50,7 @@ Route::middleware(['auth:sanctum'])->prefix('shop_owner')->group(function () {
     Route::get('/available-fertilizers', [ShopInventoryController::class, 'getAvailableFertilizers']);
     Route::get('/shop-dashboard-summary', [DashboardController::class, 'inventorySummary']);
 
+    Route::get('/sales', [SaleController::class, 'index']);
     Route::post('/sales',[SaleController::class,'store']);
     Route::get ('/sales/{id}/download-receipt',[SaleController::class,'downloadReceipt']);
     Route::get('/sales/search', [SaleController::class, 'searchByReceipt']);

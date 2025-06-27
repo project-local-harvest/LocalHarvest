@@ -17,6 +17,15 @@ use Illuminate\Support\Facades\Storage;
 
 class SaleController extends Controller
 {
+    public function index(Request $request)
+    {
+        $sales = Sale::with('items.fertilizer')
+            ->where('shop_id', $request->user()->shop->id)
+            ->latest()
+            ->paginate(15);
+
+        return response()->json($sales);
+    }
 
     public function store(Request $request)
     {
