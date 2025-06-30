@@ -44,14 +44,14 @@ class ShopProfileController extends Controller
         $latestId = Shop::max('id') ?? 0;
         $serial = 'MHP' . now()->year . (100 + $latestId + 1);
 
-        $shop = Shop::create([
-            'user_id' => $user->id,
-            'shop_serial_number' => $serial,
-            'shop_name' => $request->shop_name,
-            'contact_number' => $request->contact_number,
-            'address' => $request->address,
-            'owner_picture_url' => $request->owner_picture_url,
-        ]);
+        $shop = new Shop();
+        $shop->user_id = $user->id;
+        $shop->shop_serial_number = $serial;
+        $shop->shop_name = $request->shop_name;
+        $shop->contact_number = $request->contact_number;
+        $shop->address = $request->address;
+        $shop->owner_picture_url = $request->owner_picture_url;
+        $shop->save();
 
         return response()->json([
             'message' => 'Shop profile created successfully.',

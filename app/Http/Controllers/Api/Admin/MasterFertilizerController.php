@@ -25,7 +25,14 @@ class MasterFertilizerController extends Controller
             'application_guide' => 'nullable|string',
         ]);
 
-        $fertilizer = Fertilizer::create($request->all());
+        $fertilizer = new Fertilizer();
+        $fertilizer->name = $request->name;
+        $fertilizer->description = $request->description;
+        $fertilizer->npk_ratio = $request->npk_ratio;
+        $fertilizer->category = $request->category;
+        $fertilizer->image_url = $request->image_url;
+        $fertilizer->application_guide = $request->application_guide;
+        $fertilizer->save();
 
         return response()->json($fertilizer, 201);
     }
