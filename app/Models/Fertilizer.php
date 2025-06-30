@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Fertilizer extends Model
 {
     protected $fillable = [
-       'fertilizer_id', 'name', 'description', 'npk_ratio', 'category', 'image_url', 'application_guide'
+       'name', 'description', 'npk_ratio', 'category', 'image_url', 'application_guide'
     ];
 
 

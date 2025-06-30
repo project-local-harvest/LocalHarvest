@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
 });
 
-Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'isAdmin'])->prefix('admin')->group(function () {
 
     Route::get('/shops', [ShopProfileController::class, 'listShops']);
     Route::get('/fertilizers',[MasterFertilizerController::class, 'index']);
