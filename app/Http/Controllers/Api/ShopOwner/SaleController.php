@@ -100,7 +100,10 @@ class SaleController extends Controller
             'receipt_no' => 'required|string',
         ]);
 
-        $sale = Sale::where('receipt_no', $request->receipt_no)->with('items.fertilizer')->first();
+        $sale = Sale::where('receipt_no', $request->receipt_no)
+            ->where('shop_id', $request->user()->shop->id)
+            ->with('items.fertilizer')
+            ->first();
 
         if (!$sale) {
             return response()->json(['message' => 'Sale not found.'], 404);
